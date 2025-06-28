@@ -22,6 +22,8 @@ enum Provider {
 model Stream {
   id      String   @id @default(uuid())
   type    String
+  url    String
+  extractedId String
   active  Boolean  @default(true)
   upVotes Upvote[]
   userId  String
