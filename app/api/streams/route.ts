@@ -37,9 +37,16 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Error while creating stream",
+        message: "Error while creating stream: " + error,
       },
       { status: 411 }
     );
   }
 }
+
+
+// export async function GET(req:NextRequest){
+//   try { 
+//     const streams = await prismaClient.stream.fin
+//   }
+// }
