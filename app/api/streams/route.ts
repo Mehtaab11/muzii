@@ -44,9 +44,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function GET(req: NextRequest) {
+  try {
+    const creatorId = req.nextUrl.searchParams.get("creatorId");
+    const streams = await prismaClient.stream.findMany({
+      where: {
+        userId: creatorId ?? "",
+      },
+    });
 
-// export async function GET(req:NextRequest){
-//   try { 
-//     const streams = await prismaClient.stream.fin
-//   }
-// }
+    return NextResponse.json(streams);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Error while fetching streams: " + error,
+      },
+      { status: 411 }
+    );
+  }
+}
