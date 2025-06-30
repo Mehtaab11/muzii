@@ -29,7 +29,11 @@ export async function POST(req: NextRequest) {
     const extractedId = data.url.split("v=")[1];
 
     const res = await youtubesearchapi.GetVideoDetails(extractedId);
+    const thumbnails = res.thumbnail.thumbnails;
 
+    thumbnails.sort((a: { width: number }, b: { width: number }) =>
+      a.width < b.width ? -1 : 1
+    );
 
     const stream = await prismaClient.stream.create({
       data: {
@@ -37,6 +41,13 @@ export async function POST(req: NextRequest) {
         url: data.url,
         extractedId,
         type: "Youtube",
+        title: res.title ?? "Can't find video title",
+        smallImg:
+          (thumbnails.length > 1
+            ? thumbnails[thumbnails.length - 2].url
+            : thumbnails[thumbnails.length - 1].url) ?? "",
+
+        bigImg: thumbnails[thumbnails.length - 1].url ?? "",
       },
     });
 
@@ -63,7 +74,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(streams);
+    return NextResponse.json({streams : streams});
   } catch (error) {
     return NextResponse.json(
       {
