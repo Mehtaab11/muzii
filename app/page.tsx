@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Play, Users, ThumbsUp, Radio, Music, Headphones, Zap } from "lucide-react"
 import { Appbar } from "./components/Appbar"
-import { signIn } from "next-auth/react"
+// import { signIn } from "next-auth/react"
+import { Redirect } from "./components/Redirect"
 
 
 export default function Component() {
@@ -13,6 +14,7 @@ export default function Component() {
       {/* Header */}
       <header className="px-4  lg:px-6 h-16 flex items-center justify-center backdrop-blur-sm bg-black/20 border-b border-gray-800/50">
         <Appbar />
+        <Redirect />
       </header>
 
       <main className="flex-1">
