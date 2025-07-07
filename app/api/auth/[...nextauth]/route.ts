@@ -2,16 +2,15 @@ import GoogleProvider from "next-auth/providers/google";
 import NextAuth from "next-auth";
 import { prismaClient } from "@/app/lib/db";
 
-console.log(process.env.GOOGLE_CLIENT_ID);
-console.log(process.env.GOOGLE_CLIENT_SECRET);
-
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
+
+  secret: process.env.NEXTAUTH_SECRET ?? "secret",
   callbacks: {
     async signIn(params) {
       if (!params.user.email) {
@@ -31,6 +30,8 @@ const handler = NextAuth({
       return true;
     },
   },
-});
+}
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

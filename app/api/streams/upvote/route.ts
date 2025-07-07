@@ -10,22 +10,22 @@ const UpvoteSchema = z.object({
 export async function POST(req: NextRequest) {
   const session = await getServerSession();
 
-  const user = await prismaClient.user.findFirst({
-    where: {
-      email: session?.user?.email || "",
-    },
-  });
+      const user = await prismaClient.user.findFirst({
+        where: {
+          email: session?.user?.email || "",
+        },
+      });
 
-  if (!user) {
-    return NextResponse.json(
-      {
-        message: "User not found",
-      },
-      {
-        status: 403,
+      if (!user) {
+        return NextResponse.json(
+          {
+            message: "User not found",
+          },
+          {
+            status: 403,
+          }
+        );
       }
-    );
-  }
 
   try {
     const data = UpvoteSchema.parse(await req.json());

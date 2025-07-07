@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ChevronUp, ChevronDown, Play, Clock, Users, Plus } from "lucide-react"
+import axios from "axios"
 
 interface Song {
   id: string
@@ -18,6 +19,8 @@ interface Song {
   submittedBy: string
   youtubeId: string
 }
+
+const REFRESH_INTERVAL_MS = 10 * 1000;
 
 export default function SongVotingApp() {
   const [currentSong] = useState<Song>({
@@ -126,6 +129,24 @@ export default function SongVotingApp() {
     )
   }
 
+  async function refreshStreams() {
+    const res = await axios.get("/api/streams/my")
+    console.log("Response is here", res)
+  }
+
+  useEffect(() => {
+    refreshStreams();
+    const interval = setInterval(() => {
+
+    }, REFRESH_INTERVAL_MS)
+  }, [])
+
+
+
+
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -179,7 +200,7 @@ export default function SongVotingApp() {
                   <Input
                     placeholder="Paste YouTube URL here..."
                     value={newSongUrl}
-                    onChange={(e)  => handleUrlChange(e.target.value)}
+                    onChange={(e) => handleUrlChange(e.target.value)}
                     className="bg-white/10 border-purple-500/30 text-white placeholder:text-purple-200"
                   />
                   <Button onClick={addToQueue} disabled={!previewSong} className="bg-purple-600 hover:bg-purple-700">
