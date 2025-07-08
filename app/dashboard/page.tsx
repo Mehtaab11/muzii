@@ -10,14 +10,22 @@ import { ChevronUp, ChevronDown, Play, Clock, Users, Plus } from "lucide-react"
 import axios from "axios"
 
 interface Song {
-  id: string
-  title: string
-  artist: string
-  thumbnail: string
-  duration: string
-  votes: number
-  submittedBy: string
-  youtubeId: string
+  "id": string,
+  "type": string,
+  "url": string,
+  "extractedId": string,
+
+  "title": string,
+  "smallImg": string,
+  "bigImg": string,
+
+
+
+  "active": boolean,
+  "upVotes": number,
+  "userId": string
+  "haveUpvoted": boolean
+
 }
 
 const REFRESH_INTERVAL_MS = 10 * 1000;
@@ -35,46 +43,7 @@ export default function SongVotingApp() {
   })
 
   const [queue, setQueue] = useState<Song[]>([
-    {
-      id: "1",
-      title: "Don't Stop Believin'",
-      artist: "Journey",
-      thumbnail: "https://img.youtube.com/vi/1k8craCGpgs/maxresdefault.jpg",
-      duration: "4:11",
-      votes: 15,
-      submittedBy: "MusicLover42",
-      youtubeId: "1k8craCGpgs",
-    },
-    {
-      id: "2",
-      title: "Sweet Child O' Mine",
-      artist: "Guns N' Roses",
-      thumbnail: "https://img.youtube.com/vi/1w7OgIMMRc4/maxresdefault.jpg",
-      duration: "5:03",
-      votes: 12,
-      submittedBy: "RockFan88",
-      youtubeId: "1w7OgIMMRc4",
-    },
-    {
-      id: "3",
-      title: "Hotel California",
-      artist: "Eagles",
-      thumbnail: "https://img.youtube.com/vi/BciS5krYL80/maxresdefault.jpg",
-      duration: "6:30",
-      votes: 8,
-      submittedBy: "ClassicRock",
-      youtubeId: "BciS5krYL80",
-    },
-    {
-      id: "4",
-      title: "Stairway to Heaven",
-      artist: "Led Zeppelin",
-      thumbnail: "https://img.youtube.com/vi/QkF3oxziUI4/maxresdefault.jpg",
-      duration: "8:02",
-      votes: 6,
-      submittedBy: "ZeppelinFan",
-      youtubeId: "QkF3oxziUI4",
-    },
+
   ])
 
   const [newSongUrl, setNewSongUrl] = useState("")
@@ -121,12 +90,18 @@ export default function SongVotingApp() {
     }
   }
 
-  const vote = (songId: string, increment: number) => {
+  const vote = async (songId: string, increment: number) => {
     setQueue((prev) =>
       prev
         .map((song) => (song.id === songId ? { ...song, votes: Math.max(0, song.votes + increment) } : song))
         .sort((a, b) => b.votes - a.votes),
     )
+
+
+    await axios.post("/api/streams/upvote", {
+      streamId: "2731f901-3387-4a21-b08a-5a55bed9e743",
+    })
+
   }
 
   async function refreshStreams() {
@@ -248,17 +223,10 @@ export default function SongVotingApp() {
                           onClick={() => vote(song.id, 1)}
                           className="h-6 w-6 p-0 text-green-400 hover:text-green-300 hover:bg-green-400/20"
                         >
-                          <ChevronUp className="w-4 h-4" />
+                        { song.haveUpvoted ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-3" />}
                         </Button>
                         <span className="text-white font-semibold text-sm min-w-[2rem] text-center">{song.votes}</span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => vote(song.id, -1)}
-                          className="h-6 w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/20"
-                        >
-                          <ChevronDown className="w-4 h-4" />
-                        </Button>
+
                       </div>
 
                       <img

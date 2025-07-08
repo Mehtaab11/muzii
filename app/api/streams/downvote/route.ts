@@ -38,10 +38,13 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+    return NextResponse.json({
+      message: "Stream downvoted successfully",
+    });
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Error while upvoting stream",
+        message: "Error while downvoting stream",
       },
       {
         status: 500,
